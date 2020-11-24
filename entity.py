@@ -30,3 +30,4 @@ class Entity:
         self.room = room
 
     def acceleration_calc(self):
+        return None
