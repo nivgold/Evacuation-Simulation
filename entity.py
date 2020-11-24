@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class Entity:
     def __init__(self, room, m=80, v_0=1.5, radii=1, B=0.08, A=2*10**3, tau=0.5, k=1.2*10**5, kap=2.4*10**5):
         # Individual Entity Parameters
