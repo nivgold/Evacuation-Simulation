@@ -21,7 +21,12 @@ class Entity:
         # parameter (kg/m*s)
         self.kap = kap
 
+        # location of the Entity (x,y)
+        self.location = (0, 0)
+
         # Room Container Parameters
 
         # room
         self.room = room
+
+    def acceleration_calc(self):
