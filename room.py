@@ -10,7 +10,7 @@ class Room:
         # size of the door
         self.door_size = size[1]/15
         self.two_doors = two_doors
-        self.spawn_zone = np.array([[size[0] - 1, size[1] - 1], [1, size[1] - 1]])
+        self.spawn_zone = np.array([[1, size[1] - 1], [1, size[1] - 1]])
 
         if two_doors:
             self.left_door_location = np.array([0, size[1]/2])

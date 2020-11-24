@@ -2,7 +2,7 @@ import numpy as np
 
 
 class Entity:
-    def __init__(self, room, m=80, v_0=1.5, radii=1, B=0.08, A=2*10**3, tau=0.5, k=1.2*10**5, kap=2.4*10**5):
+    def __init__(self, room, r, v, m=80, v_0=1.5, radii=1, B=0.08, A=2*10**3, tau=0.5, k=1.2*10**5, kap=2.4*10**5):
         # Individual Entity Parameters
 
         # weight
@@ -21,14 +21,13 @@ class Entity:
         self.k = k
         # parameter (kg/m*s)
         self.kap = kap
-
-        # location of the Entity (x,y) (m,m)
-        self.r = np.zeros((2, 9000))
+        # init location
+        self.r = r
         # velocity of the Entity (v_x, v_y) (m/s, m/s)
-        self.v = np.zeros((2, 9000))
+        self.v = v
 
         # Other Entities parameters
-        self.other_agents = []
+        self.other_agents = set()
 
         # Room Container Parameters
 
@@ -45,13 +44,13 @@ class Entity:
             return x
 
     def get_e_0(self):
-        if self.room.two_doors == False:
+        if not self.room.two_doors:
             return (-self.r + self.room.door_location) / np.linalg.norm(-self.r + self.room.door_location)
         else:
             pass
 
     def set_other_agents(self, other_agents):
-        self.other_agents = other_agents
+        self.other_agents = other_agents - {self}
 
     def f_agents(self):
         f_ij = []
@@ -61,7 +60,6 @@ class Entity:
         sum_f_ij = np.sum(f_ij, 1)
         return sum_f_ij
 
-
     def f_ij(self, other_agent):
         d_ij, n_ij, t_ij, dv_ij = self.agent_distance(other_agent)
         r_ij = self.get_rij(other_agent)
@@ -70,13 +68,11 @@ class Entity:
         f_ij = first_term * n_ij + second_term * t_ij
         return f_ij
 
-
     def agent_distance(self, other_agent):
         d_ij = np.linalg.norm(self.r - other_agent.r)
         n_ij = (self.r - other_agent.r) / d_ij
         t_ij = np.array([-n_ij[1], n_ij[0]])
         dv_ij = (other_agent.r - self.r).dot(t_ij)
-
         return d_ij, n_ij, t_ij, dv_ij
 
     def f_walls(self):
