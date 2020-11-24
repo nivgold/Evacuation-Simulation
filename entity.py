@@ -26,6 +26,13 @@ class Entity:
         # velocity of the Entity (v_x, v_y) (m/s, m/s)
         self.v = np.zeros((2, 9000))
 
+        # left - blind
+        self.left_blind = False
+        # fog - blind
+        self.fog_blind = False
+        # does escaped
+        self.escaped = False
+
         # Other Entities parameters
         self.other_agents = []
 
@@ -43,11 +50,27 @@ class Entity:
         else:
             return x
 
+    def set_left_blind(self):
+        self.left_blind = True
+
+    def set_fog_blind(self):
+        self.fog_blind = True
+
+    def set_escaped(self):
+        self.escaped = True
+
     def get_e_0(self):
         if self.room.two_doors == False:
             return (-self.r + self.room.door_location) / np.linalg.norm(-self.r + self.room.door_location)
         else:
-            pass
+            if self.left_blind:
+                pass
+            elif self.fog_blind:
+                pass
+            else:
+                # normal entity with two doors
+
+                pass
 
     def set_other_agents(self, other_agents):
         self.other_agents = other_agents
