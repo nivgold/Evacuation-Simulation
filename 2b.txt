@@ -1,0 +1,5 @@
+Evacuation Time with 20 agents and desired speed of 1.5: 9.61s
+Evacuation Time with 20 agents and desired speed of 2: 7.15s
+Evacuation Time with 20 agents and desired speed of 3: 5.03s
+Evacuation Time with 20 agents and desired speed of 0.8: 17.37s
+Evacuation Time with 20 agents and desired speed of 0.5: 28.63s

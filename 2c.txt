@@ -1,0 +1,5 @@
+Evacuation Time with 20 agents while 4 are elders: 12.48s
+Evacuation Time with 50 agents while 10 are elders: 25.64s
+Evacuation Time with 75 agents while 15 are elders: 26.57s
+Evacuation Time with 100 agents while 20 are elders: 28.13s
+Evacuation Time with 150 agents while 30 are elders: 29.16s

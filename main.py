@@ -80,24 +80,88 @@ def ex1():
 
 
 def ex2():
-    # 2.a:
-    print("2.a:")
-    print("--------------------------------------------")
-    simulation_2a20 = Simulation(num_individuals=20, num_steps=9000, random_loc=True)
-    simulation_2a20.run()
-    print(f'Evacuation Time with 20 agents: {simulation_2a20.evacuation_time}')
 
-    simulation_2a50 = Simulation(num_individuals=50, num_steps=9000, random_loc=True)
-    simulation_2a50.run()
-    print(f'Evacuation Time with 50 agents: {simulation_2a50.evacuation_time}')
+    def ex2a():
+        # 2.a:
+        print("2.a:")
+        print("--------------------------------------------")
+        simulation_2a20 = Simulation(num_individuals=20, num_steps=9000, random_loc=True)
+        simulation_2a20.run()
+        print(f'Evacuation Time with 20 agents: {simulation_2a20.evacuation_time}s, agents escaped: {simulation_2a20.agents_escaped}')
+        print(simulation_2a20.y[:, :, int(simulation_2a20.evacuation_time/0.01) - 2])
 
-    simulation_2a100 = Simulation(num_individuals=100, num_steps=9000, random_loc=True)
-    simulation_2a100.run()
-    print(f'Evacuation Time with 100 agents: {simulation_2a100.evacuation_time}')
+        simulation_2a50 = Simulation(num_individuals=50, num_steps=9000, random_loc=True)
+        simulation_2a50.run()
+        print(f'Evacuation Time with 50 agents: {simulation_2a50.evacuation_time}s, agents escaped: {simulation_2a50.agents_escaped}')
+        print(simulation_2a50.y[:, :, int(simulation_2a50.evacuation_time / 0.01) - 1])
 
-    simulation_2a200 = Simulation(num_individuals=200, num_steps=9000, random_loc=True)
-    simulation_2a200.run()
-    print(f'Evacuation Time with 200 agents: {simulation_2a200.evacuation_time}')
+        simulation_2a100 = Simulation(num_individuals=100, num_steps=9000, random_loc=True)
+        simulation_2a100.run()
+        print(f'Evacuation Time with 100 agents: {simulation_2a100.evacuation_time}s')
+        print(simulation_2a100.y[:, :, int(simulation_2a100.evacuation_time / 0.01) - 1])
+
+        simulation_2a200 = Simulation(num_individuals=200, num_steps=9000, random_loc=True)
+        simulation_2a200.run()
+        print(f'Evacuation Time with 200 agents: {simulation_2a200.evacuation_time}s')
+        print(simulation_2a200.y[:, :, int(simulation_2a200.evacuation_time / 0.01) - 1])
+
+    def ex2b():
+        # 2.b:
+        print("2.b:")
+        print("--------------------------------------------")
+        simulation_v_1_5 = Simulation(num_individuals=20, num_steps=9000, random_loc=True, v_des=1.5)
+        simulation_v_1_5.run()
+        print(f'Evacuation Time with 20 agents and desired speed of 1.5: {simulation_v_1_5.evacuation_time}s')
+
+        simulation_v_2 = Simulation(num_individuals=20, num_steps=9000, random_loc=True, v_des=2)
+        simulation_v_2.run()
+        print(f'Evacuation Time with 20 agents and desired speed of 2: {simulation_v_2.evacuation_time}s')
+
+        simulation_v_3 = Simulation(num_individuals=20, num_steps=9000, random_loc=True, v_des=3)
+        simulation_v_3.run()
+        print(f'Evacuation Time with 20 agents and desired speed of 3: {simulation_v_3.evacuation_time}s')
+
+        simulation_v_0_8 = Simulation(num_individuals=20, num_steps=9000, random_loc=True, v_des=0.8)
+        simulation_v_0_8.run()
+        print(f'Evacuation Time with 20 agents and desired speed of 0.8: {simulation_v_0_8.evacuation_time}s')
+
+        simulation_v_0_5 = Simulation(num_individuals=20, num_steps=9000, random_loc=True, v_des=0.5)
+        simulation_v_0_5.run()
+        print(f'Evacuation Time with 20 agents and desired speed of 0.5: {simulation_v_0_5.evacuation_time}s')
+
+    def ex2c():
+        # 2.c:
+        print("2.c:")
+        print("--------------------------------------------")
+        simulation_20 = Simulation(num_individuals=20, num_steps=9000, random_loc=True)
+        simulation_20.set_elders_conditions()
+        simulation_20.run()
+        print(f'Evacuation Time with 20 agents while 4 are elders: {simulation_20.evacuation_time}s')
+
+        simulation_50 = Simulation(num_individuals=50, num_steps=9000, random_loc=True)
+        simulation_50.set_elders_conditions()
+        simulation_50.run()
+        print(f'Evacuation Time with 50 agents while 10 are elders: {simulation_50.evacuation_time}s')
+
+        simulation_75 = Simulation(num_individuals=75, num_steps=9000, random_loc=True)
+        simulation_75.set_elders_conditions()
+        simulation_75.run()
+        print(f'Evacuation Time with 75 agents while 15 are elders: {simulation_75.evacuation_time}s')
+
+        simulation_100 = Simulation(num_individuals=100, num_steps=9000, random_loc=True)
+        simulation_100.set_elders_conditions()
+        simulation_100.run()
+        print(f'Evacuation Time with 100 agents while 20 are elders: {simulation_100.evacuation_time}s')
+
+        simulation_150 = Simulation(num_individuals=150, num_steps=9000, random_loc=True)
+        simulation_150.set_elders_conditions()
+        simulation_150.run()
+        print(f'Evacuation Time with 150 agents while 30 are elders: {simulation_150.evacuation_time}s')
+
+
+    ex2a()
+    ex2b()
+    ex2c()
 
 
 
