@@ -186,7 +186,7 @@ def ex3():
 
     print("--------------------------------------------")
     print("3.b (for 50 entities):")
-    b = Simulation()(num_individuals=50, num_steps=9000, random_loc=False, two_door_room=True, radii=0.2)
+    b = Simulation(num_individuals=50, num_steps=9000, random_loc=False, two_door_room=True, radii=0.2)
     b.set_left_blind_conditions()
     b.run()
     print("Evacuation time: " + str(b.evacuation_time))
@@ -194,12 +194,12 @@ def ex3():
 
     print("--------------------------------------------")
     print("3.c (for 50 entities):")
-    c = Simulation()(num_individuals=50, num_steps=9000, random_loc=False, two_door_room=True, radii=0.2)
+    c = Simulation(num_individuals=50, num_steps=9000, random_loc=False, two_door_room=True, radii=0.2)
     c.set_fog_conditions()
     c.run()
     print("Evacuation time: " + str(c.evacuation_time))
     print("Dying probability: " + str(c.death_proba))
-    c = Simulation()(num_individuals=50, num_steps=9000, random_loc=False, two_door_room=False, radii=0.2)
+    c = Simulation(num_individuals=50, num_steps=9000, random_loc=False, two_door_room=False, radii=0.2)
     c.set_fog_conditions()  # TODO support one door with fog case
     c.run()
     print("Evacuation time with only one door: " + str(c.evacuation_time))
