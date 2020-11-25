@@ -14,7 +14,7 @@ them with with the function "Show"'''
 
 class Simulation:
     def __init__(self, num_individuals, num_steps, radii=1, tau=0.1, v_des=1.5, two_door_room=False, mass=80,
-                 room_size=(15, 15)):
+                 room_size=(15, 15), random_loc=True):
 
         self.evacuation_time = 0
 
@@ -31,9 +31,11 @@ class Simulation:
 
         # other
         self.room = Room(two_doors=two_door_room, size=room_size)  # kind of room the simulation runs in
-
+        if random_loc:
+            self.fill_room(radii, num_individuals, v_des)
         # update y, v matrices
-        self.fill_room(radii, num_individuals, v_des)
+        else:
+            self.fill_center_room()
         self.entities = []
         for i in range(0, num_individuals):
             self.entities.append(Entity(self.room, self.y[:, i, 0], self.v[:, i, 0],
@@ -43,7 +45,7 @@ class Simulation:
         for entity in self.entities:
             entity.set_other_agents(set(self.entities))
 
-    # function set_time, set_steps give the possiblity to late change these variable when needed
+    # function set_time, set_steps give the possibility to late change these variable when needed
     def set_steps(self, steps):
         self.num_steps = steps
 
@@ -82,6 +84,10 @@ class Simulation:
 
         self.v[:, :, 0] = 0
 
+    def fill_center_room(self):
+        pos = [self.room.get_room_size()/2, self.room.get_room_size()/2]
+        self.y[:, 0, 0] = pos
+        self.v[:, :, 0] = 0
 
     def set_fog_conditions(self):
         for i in range(0, len(self.entities), 2):
@@ -116,5 +122,5 @@ class Simulation:
                     if entity.check_escaped():
                         self.agents_escaped += 1
 
-        self.evacuation_time = 0.01 * k
+        self.evacuation_time = 0.01 * (k+2)
         self.death_proba = 1 - (self.agents_escaped / len(self.entities))

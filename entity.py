@@ -108,9 +108,7 @@ class Entity:
 
                 distance = np.amin(right_distance, left_distance)
 
-        if distance < 1.5:
-            print(self.r)
-            print(distance)
+        if distance < 1:
             # set entity to be escaped
             self.set_escaped()
             return True
@@ -179,7 +177,6 @@ class Entity:
         t_iW = np.array([-n_iW[1], n_iW[0]])
         return d_iW, n_iW, t_iW
 
-
     def acceleration_calc(self):
-        dv_dt = (self.v_0 * self.get_e_0() - self.v) / self.tau + self.f_agents() / self.m + self.f_walls() / self.m
+        dv_dt = (self.v_0 * self.get_e_0() - self.v) / self.tau + self.f_agents() / self.m
         return dv_dt
