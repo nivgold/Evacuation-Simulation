@@ -25,6 +25,8 @@ class Entity:
         self.r = r
         # velocity of the Entity (v_x, v_y) (m/s, m/s)
         self.v = v
+        # direction of the Entity
+        self.e_0 = None
 
         # left - blind
         self.left_blind = False
@@ -59,24 +61,36 @@ class Entity:
     def set_escaped(self):
         self.escaped = True
 
-    def get_e_0(self):
+    def get_neighbors_directions(self):
+        # not close to any door -> following the agents in the radius
+        neighbors_directions = []
+        for other_agent in self.other_agents:
+            if np.linalg.norm(self.r - other_agent.r) < 5:
+                neighbors_directions.append(other_agent.e_0)
+
+        neighbors_directions = np.array(neighbors_directions)
+        direction = np.mean(neighbors_directions, axis=0)
+        return direction
+
+    def calculate_e_0(self):
         if not self.room.two_doors:
+            # one door situation
             direction = (-self.r + self.room.door_location) / np.linalg.norm(-self.r + self.room.door_location)
-            if not self.fog_blind:
-                return direction
-            else:
+
+            if self.fog_blind:
+                # one door , fog situation
                 distance = np.linalg.norm(-self.r + self.room.door_location)
                 if distance > 5:
-                    # not close to any door -> following the agents in the radius
-                    #TODO
-                    pass
-                else:
-                    return direction
+                    direction = self.get_neighbors_directions()
+
         else:
+            # two doors situation
             if self.left_blind:
-                left_door_location = self.room.get_left_right_door_location()[0]
-                return (-self.r + left_door_location) / np.linalg.norm(-self.r + left_door_location)
+                # two doors situation, left-blind situation
+                right_door_location = self.room.get_left_right_door_location()[1]
+                direction = (-self.r + right_door_location) / np.linalg.norm(-self.r + right_door_location)
             elif self.fog_blind:
+                # two doors situation, fog-blind situation
                 right_door_location = self.room.get_left_right_door_location()[1]
                 right_distance = np.linalg.norm(self.r - right_door_location)
 
@@ -85,18 +99,17 @@ class Entity:
 
                 if np.min(right_distance, left_distance) > 5:
                     # not close to any door -> following the agents in the radius
-                    #TODO
-                    pass
+                    direction = self.get_neighbors_directions()
                 else:
+                    # close to one door
                     if right_distance < left_distance:
                         # going to right door
-                        return (-self.r + right_door_location) / np.linalg.norm(-self.r + right_door_location)
+                        direction = (-self.r + right_door_location) / np.linalg.norm(-self.r + right_door_location)
                     else:
                         # going to left door
-                        return (-self.r + left_door_location) / np.linalg.norm(-self.r + left_door_location)
-
+                        direction = (-self.r + left_door_location) / np.linalg.norm(-self.r + left_door_location)
             else:
-                # normal entity with two doors
+                # normal two doors situation
                 right_door_location = self.room.get_left_right_door_location()[1]
                 right_distance = np.linalg.norm(self.r - right_door_location)
 
@@ -105,10 +118,12 @@ class Entity:
 
                 if right_distance < left_distance:
                     # go to right door
-                    return (-self.r + right_door_location) / right_distance
+                    direction = (-self.r + right_door_location) / right_distance
                 else:
                     # go to left door
-                    return (-self.r + left_door_location) / left_distance
+                    direction = (-self.r + left_door_location) / left_distance
+
+        self.e_0 = direction
 
     def check_escaped(self):
         if not self.room.two_doors:
@@ -200,5 +215,6 @@ class Entity:
 
 
     def acceleration_calc(self):
-        dv_dt = (self.v_0 * self.get_e_0() - self.v) / self.tau + self.f_agents() / self.m + self.f_walls() / self.m
+        self.calculate_e_0()
+        dv_dt = (self.v_0 * self.e_0 - self.v) / self.tau + self.f_agents() / self.m + self.f_walls() / self.m
         return dv_dt
