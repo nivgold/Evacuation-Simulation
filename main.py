@@ -84,11 +84,16 @@ def ex2():
 
 
 def ex3():
-    pass
+    print("--------------------------------------------")
+    print("3.a:")
+    a = Simulation(num_individuals=50, num_steps=9000, random_loc=False, two_door_room=True, radii=0.25,)
+    a.run()
+    print("Evacuation time: " + str(a.evacuation_time))
+
 
 
 if __name__ == '__main__':
-    ex1()
+    # ex1()
     # ex2()
-    # ex3()
+     ex3()
 
