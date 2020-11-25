@@ -24,7 +24,7 @@ class Room:
                                    [[size[0], 0], [0, 0]]])
         else:
             # door location - right
-            self.door_location = np.array([0, size[1] / 2])
+            self.door_location = np.array([size[0], size[1] / 2])
             # setting up walls
             self.walls = np.array([[[0, 0], [0, size[1]]],
                                    [[size[0], size[1]], [size[0], size[1] / 2 + self.door_size / 2]],
