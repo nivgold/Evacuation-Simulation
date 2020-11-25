@@ -47,7 +47,7 @@ class Room:
     def get_door_location(self):          # gives back the destination the agents want to get to
         return self.door_location
 
-    def get_right_left_door_location(self):          # gives back the destination the agents want to get to
+    def get_left_right_door_location(self):          # gives back the destination the agents want to get to
         return [self.left_door_location, self.right_door_location]
 
     def is_two_doors(self):          # gives back the destination the agents want to get to

@@ -20,12 +20,14 @@ class Simulation:
 
         # Constants
         self.num_steps = num_steps  # number of steps for integration
+        self.v_des = v_des
 
         # Agent information
         self.agents_escaped = 0  # number of agents escaped by timesteps
-        self.v = np.zeros((2, self.N, self.num_steps))  # Three dimensional array of velocity
+        self.death_proba = 0
+        self.v = np.zeros((2, num_individuals, self.num_steps))  # Three dimensional array of velocity
         self.y = np.zeros(
-            (2, self.N, self.num_steps))  # Three dimensional array of place: x = coordinates, y = Agent, z=Time
+            (2, num_individuals, self.num_steps))  # Three dimensional array of place: x = coordinates, y = Agent, z=Time
 
         # other
         self.room = Room(two_doors=two_door_room, size=room_size)  # kind of room the simulation runs in
@@ -37,6 +39,9 @@ class Simulation:
             self.entities.append(Entity(self.room, self.y[:, i, 0], self.v[:, i, 0],
                                         mass, v_des, radii, tau=tau))  # initialize Entity
         self.entities = np.array(self.entities)
+
+        for entity in self.entities:
+            entity.set_other_agents(set(self.entities))
 
     # function set_time, set_steps give the possiblity to late change these variable when needed
     def set_steps(self, steps):
@@ -75,9 +80,41 @@ class Simulation:
                 pos = [x, y]
             self.y[:, i, 0] = pos
 
-        self.v[:, :, 0] = v_des * self.diff_equ.e_t(self.y[:, :, 0])
+        self.v[:, :, 0] = 0
 
-    # calls the method of integration with the starting positions, diffequatial equation, number of steps, and delta t = tau
+
+    def set_fog_conditions(self):
+        for i in range(0, len(self.entities), 2):
+            self.entities[i].set_fog_blind()
+
+    def set_left_blind_conditions(self):
+        for i in range(0, len(self.entities), 2):
+            self.entities[i].set_left_blind()
+
+    def set_elders_conditions(self):
+        elder_v_des = self.v_des / 3
+        for i in range(0, len(self.entities), 5):
+            self.entities[i].v_0 = elder_v_des
+
     def run(self):
-        self.y, self.agents_escaped, self.forces = self.method(self.y[:, :, 0], self.v[:, :, 0], self.diff_equ.f,
-                                                               self.num_steps, self.tau, self.room)
+
+        for k in range(self.num_steps-1):
+            if self.agents_escaped == len(self.entities):
+                break
+            for index, entity in enumerate(self.entities):
+                if not entity.escaped:
+                    dv_dt = entity.acceleration_calc()
+
+                    # updating location and velocity
+                    self.v[:, index, k+1] = (dv_dt * 0.01) + self.v[:, index, k]
+                    self.y[:, index, k+1] = self.y[:, index, k] + self.v[:, index, k+1]*0.01
+
+                    # updating entity location and velocity
+                    entity.r = self.y[:, index, k+1]
+                    entity.v = self.v[:, index, k+1]
+
+                    if entity.check_escaped():
+                        self.agents_escaped += 1
+
+        self.evacuation_time = 0.01 * k
+        self.death_proba = 1 - (self.agents_escaped / len(self.entities))

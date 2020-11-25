@@ -64,13 +64,57 @@ class Entity:
             return (-self.r + self.room.door_location) / np.linalg.norm(-self.r + self.room.door_location)
         else:
             if self.left_blind:
-                pass
+                left_door_location = self.room.get_left_right_door_location()[0]
+                return (-self.r + left_door_location) / np.linalg.norm(-self.r + left_door_location)
             elif self.fog_blind:
-                pass
+                right_door_location = self.room.get_left_right_door_location()[1]
+                right_distance = np.linalg.norm(self.r - right_door_location)
+
+                left_door_location = self.room.get_left_right_door_location()[0]
+                left_distance = np.linalg.norm(self.r - left_door_location)
+
+                if np.min(right_distance, left_distance) > 5:
+                    # not close to any door -> following the agents in the radius
+                    pass
+                else:
+                    if right_distance < left_distance:
+                        # going to right door
+                        return (-self.r + right_door_location) / np.linalg.norm(-self.r + right_door_location)
+                    else:
+                        # going to left door
+                        return (-self.r + left_door_location) / np.linalg.norm(-self.r + left_door_location)
+
             else:
                 # normal entity with two doors
 
                 pass
+
+    def check_escaped(self):
+        if not self.room.two_doors:
+            door_location = self.room.get_door_location()
+            distance = np.linalg.norm(self.r - door_location)
+        else:
+            if self.left_blind:
+                right_door_location = self.room.get_left_right_door_location()[1]
+                distance = np.linalg.norm(self.r - right_door_location)
+
+            else:
+                # including both the fog-blind and regular two-doors cases
+                right_door_location = self.room.get_left_right_door_location()[1]
+                right_distance = np.linalg.norm(self.r - right_door_location)
+
+                left_door_location = self.room.get_left_right_door_location()[0]
+                left_distance = np.linalg.norm(self.r - left_door_location)
+
+                distance = np.amin(right_distance, left_distance)
+
+        if distance < 1.5:
+            print(self.r)
+            print(distance)
+            # set entity to be escaped
+            self.set_escaped()
+            return True
+        return False
 
     def set_other_agents(self, other_agents):
         self.other_agents = other_agents - {self}
@@ -80,7 +124,9 @@ class Entity:
         for other_agent in self.other_agents:
             f_ij.append(self.f_ij(other_agent))
         f_ij = np.array(f_ij)
-        sum_f_ij = np.sum(f_ij, 1)
+        if len(f_ij) == 0:
+            return 0
+        sum_f_ij = np.sum(f_ij, axis=1)
         return sum_f_ij
 
     def f_ij(self, other_agent):
