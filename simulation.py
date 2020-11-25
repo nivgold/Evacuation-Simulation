@@ -13,7 +13,7 @@ them with with the function "Show"'''
 
 
 class Simulation:
-    def __init__(self, num_individuals, num_steps, radii=0.4, tau=0.1, v_des=1.5, two_door_room=False, mass=80,
+    def __init__(self, num_individuals, num_steps, radii=0.1, tau=0.1, v_des=1.5, two_door_room=False, mass=80,
                  room_size=(15, 15), random_loc=True):
 
         self.evacuation_time = 0
@@ -105,6 +105,7 @@ class Simulation:
     def run(self):
 
         for k in range(self.num_steps-1):
+            # print(f'locations at time {k}: {self.y[:,:, k]}')
             if self.agents_escaped == len(self.entities):
                 break
             for index, entity in enumerate(self.entities):
@@ -120,7 +121,9 @@ class Simulation:
                     entity.v = self.v[:, index, k+1]
 
                     if entity.check_escaped():
+                        # print("AGENT ESCAPED!!!")
                         self.agents_escaped += 1
+                        # print(f'num of escapes: {self.agents_escaped}')
 
         self.evacuation_time = 0.01 * (k+2)
         self.death_proba = 1 - (self.agents_escaped / len(self.entities))

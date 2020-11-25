@@ -120,11 +120,12 @@ class Entity:
     def f_agents(self):
         f_ij = []
         for other_agent in self.other_agents:
-            f_ij.append(self.f_ij(other_agent))
+            if not other_agent.escaped:
+                f_ij.append(self.f_ij(other_agent))
         f_ij = np.array(f_ij)
         if len(f_ij) == 0:
             return 0
-        sum_f_ij = np.sum(f_ij, axis=1)
+        sum_f_ij = np.sum(f_ij, axis=0)
         return sum_f_ij
 
     def f_ij(self, other_agent):
