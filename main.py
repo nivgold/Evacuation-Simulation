@@ -91,15 +91,62 @@ def ex1():
 
 
 def ex2():
-    pass
+    # 2.a:
+    print("2.a:")
+    print("--------------------------------------------")
+    simulation_2a20 = Simulation(num_individuals=20, num_steps=9000, random_loc=True)
+    simulation_2a20.run()
+    print(f'Evacuation Time with 20 agents: {simulation_2a20.evacuation_time}')
+
+    simulation_2a50 = Simulation(num_individuals=50, num_steps=9000, random_loc=True)
+    simulation_2a50.run()
+    print(f'Evacuation Time with 50 agents: {simulation_2a50.evacuation_time}')
+
+    simulation_2a100 = Simulation(num_individuals=100, num_steps=9000, random_loc=True)
+    simulation_2a100.run()
+    print(f'Evacuation Time with 100 agents: {simulation_2a100.evacuation_time}')
+
+    simulation_2a200 = Simulation(num_individuals=200, num_steps=9000, random_loc=True)
+    simulation_2a200.run()
+    print(f'Evacuation Time with 200 agents: {simulation_2a200.evacuation_time}')
+
 
 
 def ex3():
-    pass
+    print("--------------------------------------------")
+    print("3.a (for 50 entities):")
+    a = Simulation(num_individuals=50, num_steps=9000, random_loc=False, two_door_room=True, radii=0.2)
+    a.run()
+    print("Evacuation time: " + str(a.evacuation_time))
+    a = None  # free space
+
+    print("--------------------------------------------")
+    print("3.b (for 50 entities):")
+    b = Simulation()(num_individuals=50, num_steps=9000, random_loc=False, two_door_room=True, radii=0.2)
+    b.set_left_blind_conditions()
+    b.run()
+    print("Evacuation time: " + str(b.evacuation_time))
+    b = None  # free space
+
+    print("--------------------------------------------")
+    print("3.c (for 50 entities):")
+    c = Simulation()(num_individuals=50, num_steps=9000, random_loc=False, two_door_room=True, radii=0.2)
+    c.set_fog_conditions()
+    c.run()
+    print("Evacuation time: " + str(c.evacuation_time))
+    print("Dying probability: " + str(c.death_proba))
+    c = Simulation()(num_individuals=50, num_steps=9000, random_loc=False, two_door_room=False, radii=0.2)
+    c.set_fog_conditions()  # TODO support one door with fog case
+    c.run()
+    print("Evacuation time with only one door: " + str(c.evacuation_time))
+    print("Dying probability with only one door: " + str(c.death_proba))
+    c = None  # free space
+
+
 
 
 if __name__ == '__main__':
-    ex1()
+    # ex1()
     # ex2()
-    # ex3()
+     ex3()
 
