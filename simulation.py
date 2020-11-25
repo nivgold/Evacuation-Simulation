@@ -13,7 +13,7 @@ them with with the function "Show"'''
 
 
 class Simulation:
-    def __init__(self, num_individuals, num_steps, radii=1, tau=0.1, v_des=1.5, two_door_room=False, mass=80,
+    def __init__(self, num_individuals, num_steps, radii=0.4, tau=0.1, v_des=1.5, two_door_room=False, mass=80,
                  room_size=(15, 15), random_loc=True):
 
         self.evacuation_time = 0
