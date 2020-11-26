@@ -26,7 +26,8 @@ class Entity:
         # velocity of the Entity (v_x, v_y) (m/s, m/s)
         self.v = v
         # direction of the Entity
-        self.e_0 = None
+        random_destination = np.random.uniform(-1, 1, (2,))
+        self.e_0 = random_destination
 
         # left - blind
         self.left_blind = False
@@ -69,6 +70,8 @@ class Entity:
                 neighbors_directions.append(other_agent.e_0)
 
         neighbors_directions = np.array(neighbors_directions)
+        if len(neighbors_directions) == 0:
+            return self.e_0
         direction = np.mean(neighbors_directions, axis=0)
         return direction
 
@@ -97,7 +100,7 @@ class Entity:
                 left_door_location = self.room.get_left_right_door_location()[0]
                 left_distance = np.linalg.norm(self.r - left_door_location)
 
-                if np.min(right_distance, left_distance) > 5:
+                if np.min(np.array([right_distance, left_distance])) > 5:
                     # not close to any door -> following the agents in the radius
                     direction = self.get_neighbors_directions()
                 else:
@@ -142,7 +145,9 @@ class Entity:
                 left_door_location = self.room.get_left_right_door_location()[0]
                 left_distance = np.linalg.norm(self.r - left_door_location)
 
-                distance = np.amin(right_distance, left_distance)
+
+
+                distance = np.min(np.array([right_distance, left_distance]))
 
         if distance < 0.5:
             # set entity to be escaped

@@ -14,7 +14,7 @@ them with with the function "Show"'''
 
 class Simulation:
     def __init__(self, num_individuals, num_steps, radii=0.2, tau=0.1, v_des=1.5, two_door_room=False, mass=80,
-                 room_size=(15, 15), random_loc=True):
+                 room_size=(15, 15), random_loc=True, is_distributed=False):
 
         self.evacuation_time = 0
 
@@ -38,8 +38,17 @@ class Simulation:
             self.fill_center_room()
         self.entities = []
         for i in range(0, num_individuals):
-            self.entities.append(Entity(self.room, self.y[:, i, 0], self.v[:, i, 0],
+            if not is_distributed:
+                self.entities.append(Entity(self.room, self.y[:, i, 0], self.v[:, i, 0],
                                         mass, v_des, radii, tau=tau))  # initialize Entity
+            else:
+                if i < num_individuals / 2:
+                    mass_sample = np.random.normal(loc=78, scale=13.15)
+                    velocity_sample = np.random.normal(loc=2.86, scale=0.75)
+                else:
+                    mass_sample = np.random.normal(loc=65.74, scale=11.34)
+                    velocity_sample = np.random.normal(loc=2.5, scale=0.6)
+                self.entities.append(Entity(self.room, self.y[:, i, 0], self.v[:, i, 0], mass_sample, velocity_sample, radii, tau=tau))
         self.entities = np.array(self.entities)
 
         for entity in self.entities:
