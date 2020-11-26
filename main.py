@@ -207,7 +207,7 @@ def ex3():
         print("--------------------------------------------")
         print("Two Doors with Fog:")
         print("50 entities with two doors and fog:")
-        c = Simulation(num_individuals=50, num_steps=9000, random_loc=True, two_door_room=True, radii=0.35)
+        c = Simulation(num_individuals=50, num_steps=9000, random_loc=True, two_door_room=True)
         c.set_fog_conditions()
         c.run()
         print("Evacuation time: " + str(c.evacuation_time))
@@ -381,6 +381,6 @@ def second_3():
 
 if __name__ == '__main__':
     # ex1()
-    ex2()
+    # ex2()
     # ex3()
-    # second_3()
+    second_3()

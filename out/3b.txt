@@ -1,0 +1,1 @@
+Evacuation Time with 50 Agents When 1/2 of Them are Left-Door Blinded: 9.98s
