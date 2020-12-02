@@ -2,7 +2,7 @@ import numpy as np
 
 
 class Entity:
-    def __init__(self, room, r, v, m=80, v_0=1.5, radii=1, B=0.08, A=2*10**3, tau=0.5, k=1.2*10**5, kap=2.4*10**5):
+    def __init__(self, room, r, v, m=80, v_0=0.8, radii=0.2, B=0.08, A=2*10**3, tau=0.5, k=1.2*10**5, kap=2.4*10**5):
         # Individual Entity Parameters
 
         # weight
@@ -149,7 +149,7 @@ class Entity:
 
                 distance = np.min(np.array([right_distance, left_distance]))
 
-        if distance < 0.5:
+        if distance < 0.6:
             # set entity to be escaped
             self.set_escaped()
             return True
@@ -201,23 +201,41 @@ class Entity:
 
     def wall_distance(self, wall):
 
-        # need to find wall closest coordinates
-        wall_p1 = wall[0, :]
-        wall_p2 = wall[1, :]
-        agent_point = self.r
+        # # need to find wall closest coordinates
+        # wall_p1 = wall[0, :]
+        # wall_p2 = wall[1, :]
+        # agent_point = self.r
+        #
+        # wall_vec = wall_p2 - wall_p1
+        # det = np.sum(wall_vec**2)
+        # a = np.sum(wall_vec * (agent_point - wall_p1)) / det
+        # wall_closest_point = wall_p1 + a * wall_vec
+        #
+        # d_iW = np.linalg.norm(agent_point - wall_closest_point)
+        # n_iW = (self.r - wall_closest_point) / d_iW
+        # t_iW = np.array([-n_iW[1], n_iW[0]])
+        #
+        # return d_iW, n_iW, t_iW
 
-        wall_vec = wall_p2 - wall_p1
-        det = np.sum(wall_vec**2)
-        a = np.sum(wall_vec * (agent_point - wall_p1)) / det
-        wall_closest_point = wall_p1 + a * wall_vec
+        temp_wall = wall
+        line_vec = temp_wall[1, :] - temp_wall[0, :]
+        pnt_vec = self.r - temp_wall[0, :]
+        line_len = np.linalg.norm(line_vec)
+        line_unitvec = line_vec / line_len
+        pnt_vec_scaled = pnt_vec / line_len
+        temp = line_unitvec.dot(pnt_vec_scaled)
+        if temp < 0.0:
+            temp = 0.0
+        elif temp > 1.0:
+            temp = 1.0
+        nearest = line_vec * temp
+        dist = pnt_vec - nearest
+        nearest = nearest + temp_wall[0, :]
+        distance = np.linalg.norm(dist)
+        n = dist / distance
+        t = np.array([-n[1], n[0]])
 
-        d_iW = np.linalg.norm(agent_point - wall_closest_point)
-        n_iW = (self.r - wall_closest_point) / d_iW
-        t_iW = np.array([-n_iW[1], n_iW[0]])
-
-        return d_iW, n_iW, t_iW
-
-
+        return distance, n, t
 
     def acceleration_calc(self):
         self.calculate_e_0()

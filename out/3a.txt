@@ -1,1 +1,1 @@
-Evacuation Time with 50 Agents: 5.69s
+Evacuation Time with 50 Agents: 16.75s

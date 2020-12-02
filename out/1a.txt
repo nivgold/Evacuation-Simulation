@@ -1,1 +1,1 @@
-Evacuation Time: 4.78s
+Evacuation Time: 9.28s
