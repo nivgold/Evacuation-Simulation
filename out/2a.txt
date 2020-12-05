@@ -1,4 +1,4 @@
-20 agents evacuation time: 18.89s
-50 agents evacuation time: 22.77s
-100 agents evacuation time: 30.92s
-200 agents evacuation time: -
+20 agents evacuation time: 44.72s
+50 agents evacuation time: 64.91s
+100 agents evacuation time: 77.01s
+200 agents evacuation time: 89.62s

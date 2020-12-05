@@ -97,9 +97,9 @@ def ex1():
                             coll_counter += 1
         print("there were: " + str(coll_counter) + " mutual interceptions")
 
-    ex1a()
+    # ex1a()
     locations = ex1b()
-    ex1c(locations)
+    # ex1c(locations)
 
 def ex2():
 
@@ -110,22 +110,18 @@ def ex2():
         simulation_2a20 = Simulation(num_individuals=20, num_steps=9000, random_loc=True)
         simulation_2a20.run()
         print(f'Evacuation Time with 20 agents: {simulation_2a20.evacuation_time}s, agents escaped: {simulation_2a20.agents_escaped}')
-        print(simulation_2a20.y[:, :, int(simulation_2a20.evacuation_time/0.01) - 2])
 
-        simulation_2a50 = Simulation(num_individuals=50, num_steps=9000, random_loc=True)
-        simulation_2a50.run()
-        print(f'Evacuation Time with 50 agents: {simulation_2a50.evacuation_time}s, agents escaped: {simulation_2a50.agents_escaped}')
-        print(simulation_2a50.y[:, :, int(simulation_2a50.evacuation_time / 0.01) - 1])
+        # simulation_2a50 = Simulation(num_individuals=50, num_steps=9000, random_loc=True)
+        # simulation_2a50.run()
+        # print(f'Evacuation Time with 50 agents: {simulation_2a50.evacuation_time}s, agents escaped: {simulation_2a50.agents_escaped}')
 
         simulation_2a100 = Simulation(num_individuals=100, num_steps=9000, random_loc=True)
         simulation_2a100.run()
         print(f'Evacuation Time with 100 agents: {simulation_2a100.evacuation_time}s')
-        print(simulation_2a100.y[:, :, int(simulation_2a100.evacuation_time / 0.01) - 1])
 
         simulation_2a200 = Simulation(num_individuals=200, num_steps=9000, random_loc=True)
         simulation_2a200.run()
         print(f'Evacuation Time with 200 agents: {simulation_2a200.evacuation_time}s')
-        # print(simulation_2a200.y[:, :, int(simulation_2a200.evacuation_time / 0.01) - 1])
 
     def ex2b():
         # 2.b:
@@ -139,6 +135,7 @@ def ex2():
             print(f'run with {v_des} velocity')
             simulation = Simulation(num_individuals=50, num_steps=9000, random_loc=True, v_des=v_des, radii=0.1)
             simulation.run()
+            print(simulation.evacuation_time)
             evacuation_time.append(simulation.evacuation_time)
 
         plt.figure()
@@ -157,12 +154,12 @@ def ex2():
         plt.style.use('ggplot')
 
         plt.figure(figsize=(10, 8))
-        for num_people in [25, 50, 75, 100, 125, 150]:
+        for num_people in [20, 50, 75, 100]:
             evacuation_time = []
             desired_velocity = np.arange(0.5, 5, 0.2)
             for v_des in desired_velocity:
                 print(f'run with {num_people} people and {v_des} velocity')
-                simulation = Simulation(num_individuals=num_people, num_steps=9000, random_loc=True, v_des=v_des, radii=0.1)
+                simulation = Simulation(num_individuals=num_people, num_steps=9000, random_loc=True, v_des=v_des)
                 simulation.set_elders_conditions()
                 simulation.run()
                 evacuation_time.append(simulation.evacuation_time)
@@ -175,28 +172,64 @@ def ex2():
         plt.xlim(0, 5.5)
         plt.ylim(0, 91)
         plt.legend()
-        plt.title("Evacuation Time to Desired Velocity for 50 People When 10 are Elders")
+        plt.title("Evacuation Time to Desired Velocity for Simulations with 20% are Elders")
         plt.savefig('./out/Evacuation_time_to_desired_velocity_elders.png')
 
 
-    ex2a()
+    # ex2a()
     # ex2b()
-    # ex2c()
+    ex2c()
 
 def ex3():
 
     def ex3a():
         print("--------------------------------------------")
+        print("3.a 20 entities with two doors:")
+        a = Simulation(num_individuals=20, num_steps=9000, random_loc=True, two_door_room=True)
+        a.run()
+        print("Evacuation time: " + str(a.evacuation_time))
+        print(f"escaped: {a.agents_escaped}")
+
         print("3.a 50 entities with two doors:")
         a = Simulation(num_individuals=50, num_steps=9000, random_loc=True, two_door_room=True)
         a.run()
         print("Evacuation time: " + str(a.evacuation_time))
         print(f"escaped: {a.agents_escaped}")
 
+        print("3.a 75 entities with two doors:")
+        a = Simulation(num_individuals=75, num_steps=9000, random_loc=True, two_door_room=True)
+        a.run()
+        print("Evacuation time: " + str(a.evacuation_time))
+        print(f"escaped: {a.agents_escaped}")
+
+        print("3.a 100 entities with two doors:")
+        a = Simulation(num_individuals=100, num_steps=9000, random_loc=True, two_door_room=True)
+        a.run()
+        print("Evacuation time: " + str(a.evacuation_time))
+        print(f"escaped: {a.agents_escaped}")
+
     def ex3b():
         print("--------------------------------------------")
+        print("3.b 20 entities with two doors and half are left-door blinded:")
+        b = Simulation(num_individuals=20, num_steps=9000, random_loc=True, two_door_room=True)
+        b.set_left_blind_conditions()
+        b.run()
+        print("Evacuation time: " + str(b.evacuation_time))
+
         print("3.b 50 entities with two doors and half are left-door blinded:")
         b = Simulation(num_individuals=50, num_steps=9000, random_loc=True, two_door_room=True)
+        b.set_left_blind_conditions()
+        b.run()
+        print("Evacuation time: " + str(b.evacuation_time))
+
+        print("3.b 75 entities with two doors and half are left-door blinded:")
+        b = Simulation(num_individuals=75, num_steps=9000, random_loc=True, two_door_room=True)
+        b.set_left_blind_conditions()
+        b.run()
+        print("Evacuation time: " + str(b.evacuation_time))
+
+        print("3.b 100 entities with two doors and half are left-door blinded:")
+        b = Simulation(num_individuals=100, num_steps=9000, random_loc=True, two_door_room=True)
         b.set_left_blind_conditions()
         b.run()
         print("Evacuation time: " + str(b.evacuation_time))
@@ -204,36 +237,29 @@ def ex3():
     def ex3c():
         print("--------------------------------------------")
         print("Two Doors with Fog:")
+        print("20 entities with two doors and fog:")
+        c = Simulation(num_individuals=20, num_steps=9000, random_loc=True, two_door_room=True, v_des=0.8)
+        c.set_fog_conditions()
+        c.run()
+        print("Evacuation time: " + str(c.evacuation_time))
+        print("Dying probability: " + str(c.death_proba))
+
         print("50 entities with two doors and fog:")
-        c = Simulation(num_individuals=50, num_steps=9000, random_loc=True, two_door_room=True)
+        c = Simulation(num_individuals=50, num_steps=9000, random_loc=True, two_door_room=True, v_des=0.9)
         c.set_fog_conditions()
         c.run()
         print("Evacuation time: " + str(c.evacuation_time))
         print("Dying probability: " + str(c.death_proba))
 
         print("75 entities with two doors and fog:")
-        c = Simulation(num_individuals=75, num_steps=9000, random_loc=True, two_door_room=True)
+        c = Simulation(num_individuals=75, num_steps=9000, random_loc=True, two_door_room=True, v_des=0.9)
         c.set_fog_conditions()
         c.run()
         print("Evacuation time: " + str(c.evacuation_time))
         print("Dying probability: " + str(c.death_proba))
 
         print("100 entities with two doors and fog:")
-        c = Simulation(num_individuals=100, num_steps=9000, random_loc=True, two_door_room=True)
-        c.set_fog_conditions()
-        c.run()
-        print("Evacuation time: " + str(c.evacuation_time))
-        print("Dying probability: " + str(c.death_proba))
-
-        print("150 entities with two doors and fog:")
-        c = Simulation(num_individuals=150, num_steps=9000, random_loc=True, two_door_room=True)
-        c.set_fog_conditions()
-        c.run()
-        print("Evacuation time: " + str(c.evacuation_time))
-        print("Dying probability: " + str(c.death_proba))
-
-        print("200 entities with two doors and fog:")
-        c = Simulation(num_individuals=200, num_steps=9000, random_loc=True, two_door_room=True)
+        c = Simulation(num_individuals=100, num_steps=9000, random_loc=True, two_door_room=True, v_des=0.5)
         c.set_fog_conditions()
         c.run()
         print("Evacuation time: " + str(c.evacuation_time))
@@ -241,37 +267,29 @@ def ex3():
 
         print("--------------------------------------------")
         print("One Door with Fog:")
+        print("20 entities with one door and fog:")
+        c = Simulation(num_individuals=20, num_steps=9000, random_loc=True, two_door_room=False, v_des=0.8)
+        c.set_fog_conditions()
+        c.run()
+        print("Evacuation time with only one door: " + str(c.evacuation_time))
+        print("Dying probability with only one door: " + str(c.death_proba))
+
         print("50 entities with one door and fog:")
-        c = Simulation(num_individuals=50, num_steps=9000, random_loc=True, two_door_room=False, radii=0.33)
+        c = Simulation(num_individuals=50, num_steps=9000, random_loc=True, two_door_room=False, v_des=0.8)
         c.set_fog_conditions()
         c.run()
         print("Evacuation time with only one door: " + str(c.evacuation_time))
         print("Dying probability with only one door: " + str(c.death_proba))
 
         print("75 entities with one door and fog:")
-        c = Simulation(num_individuals=75, num_steps=9000, random_loc=True, two_door_room=False)
+        c = Simulation(num_individuals=75, num_steps=9000, random_loc=True, two_door_room=False, v_des=0.5)
         c.set_fog_conditions()
         c.run()
         print("Evacuation time with only one door: " + str(c.evacuation_time))
         print("Dying probability with only one door: " + str(c.death_proba))
 
         print("100 entities with one door and fog:")
-        c = Simulation(num_individuals=100, num_steps=9000, random_loc=True, two_door_room=False)
-        c.set_fog_conditions()
-        c.run()
-        print("Evacuation time with only one door: " + str(c.evacuation_time))
-        print("Dying probability with only one door: " + str(c.death_proba))
-
-        print("150 entities with one door and fog:")
-        c = Simulation(num_individuals=150, num_steps=9000, random_loc=True, two_door_room=False)
-        c.set_fog_conditions()
-        c.run()
-        print("Evacuation time with only one door: " + str(c.evacuation_time))
-        print("Dying probability with only one door: " + str(c.death_proba))
-
-
-        print("200 entities with one door and fog:")
-        c = Simulation(num_individuals=200, num_steps=9000, random_loc=True, two_door_room=False)
+        c = Simulation(num_individuals=100, num_steps=9000, random_loc=True, two_door_room=False, v_des=0.5)
         c.set_fog_conditions()
         c.run()
         print("Evacuation time with only one door: " + str(c.evacuation_time))
@@ -285,9 +303,8 @@ def second_3():
     print("--------------------------------------------")
     print("Simulations with one door:")
 
-    agents = 25
-    radii = 0.2
-    simulation = Simulation(num_individuals=agents, num_steps=9000, radii=radii, two_door_room=False, random_loc=True,
+    agents = 20
+    simulation = Simulation(num_individuals=agents, num_steps=9000, two_door_room=False, random_loc=True,
                             is_distributed=True)
     simulation.run()
     print(f'           Evacuation time: {simulation.evacuation_time}s')
@@ -295,7 +312,7 @@ def second_3():
     print('           Death Probability: {:2.2f}%\n'.format(simulation.death_proba*100))
 
     agents = 50
-    simulation = Simulation(num_individuals=agents, num_steps=9000, radii=radii, two_door_room=False, random_loc=True,
+    simulation = Simulation(num_individuals=agents, num_steps=9000, two_door_room=False, random_loc=True,
                             is_distributed=True)
     simulation.run()
     print(f'           Evacuation time: {simulation.evacuation_time}s')
@@ -303,7 +320,7 @@ def second_3():
     print('           Death Probability: {:2.2f}%\n'.format(simulation.death_proba * 100))
 
     agents = 75
-    simulation = Simulation(num_individuals=agents, num_steps=9000, radii=radii, two_door_room=False, random_loc=True,
+    simulation = Simulation(num_individuals=agents, num_steps=9000, two_door_room=False, random_loc=True,
                             is_distributed=True)
     simulation.run()
     print(f'           Evacuation time: {simulation.evacuation_time}s')
@@ -311,23 +328,7 @@ def second_3():
     print('           Death Probability: {:2.2f}%\n'.format(simulation.death_proba * 100))
 
     agents = 100
-    simulation = Simulation(num_individuals=agents, num_steps=9000, radii=radii, two_door_room=False, random_loc=True,
-                            is_distributed=True)
-    simulation.run()
-    print(f'           Evacuation time: {simulation.evacuation_time}s')
-    print(f'{agents} Agents: ')
-    print('           Death Probability: {:2.2f}%\n'.format(simulation.death_proba * 100))
-
-    agents = 125
-    simulation = Simulation(num_individuals=agents, num_steps=9000, radii=radii, two_door_room=False, random_loc=True,
-                            is_distributed=True)
-    simulation.run()
-    print(f'           Evacuation time: {simulation.evacuation_time}s')
-    print(f'{agents} Agents: ')
-    print('           Death Probability: {:2.2f}%\n'.format(simulation.death_proba * 100))
-
-    agents = 150
-    simulation = Simulation(num_individuals=agents, num_steps=9000, radii=radii, two_door_room=False, random_loc=True,
+    simulation = Simulation(num_individuals=agents, num_steps=9000, two_door_room=False, random_loc=True,
                             is_distributed=True)
     simulation.run()
     print(f'           Evacuation time: {simulation.evacuation_time}s')
@@ -337,8 +338,16 @@ def second_3():
     print("--------------------------------------------")
     print("Simulations with two doors:")
 
+    agents = 20
+    simulation = Simulation(num_individuals=agents, num_steps=9000, two_door_room=True, random_loc=True,
+                            is_distributed=True)
+    simulation.run()
+    print(f'           Evacuation time: {simulation.evacuation_time}s')
+    print(f'{agents} Agents: ')
+    print('           Death Probability: {:2.2f}%\n'.format(simulation.death_proba * 100))
+
     agents = 50
-    simulation = Simulation(num_individuals=agents, num_steps=9000, radii=radii, two_door_room=True, random_loc=True,
+    simulation = Simulation(num_individuals=agents, num_steps=9000, two_door_room=True, random_loc=True,
                             is_distributed=True)
     simulation.run()
     print(f'           Evacuation time: {simulation.evacuation_time}s')
@@ -346,7 +355,7 @@ def second_3():
     print('           Death Probability: {:2.2f}%\n'.format(simulation.death_proba * 100))
 
     agents = 75
-    simulation = Simulation(num_individuals=agents, num_steps=9000, radii=radii, two_door_room=True, random_loc=True,
+    simulation = Simulation(num_individuals=agents, num_steps=9000, two_door_room=True, random_loc=True,
                             is_distributed=True)
     simulation.run()
     print(f'           Evacuation time: {simulation.evacuation_time}s')
@@ -354,23 +363,7 @@ def second_3():
     print('           Death Probability: {:2.2f}%\n'.format(simulation.death_proba * 100))
 
     agents = 100
-    simulation = Simulation(num_individuals=agents, num_steps=9000, radii=radii, two_door_room=True, random_loc=True,
-                            is_distributed=True)
-    simulation.run()
-    print(f'           Evacuation time: {simulation.evacuation_time}s')
-    print(f'{agents} Agents: ')
-    print('           Death Probability: {:2.2f}%\n'.format(simulation.death_proba * 100))
-
-    agents = 125
-    simulation = Simulation(num_individuals=agents, num_steps=9000, radii=radii, two_door_room=True, random_loc=True,
-                            is_distributed=True)
-    simulation.run()
-    print(f'           Evacuation time: {simulation.evacuation_time}s')
-    print(f'{agents} Agents: ')
-    print('           Death Probability: {:2.2f}%\n'.format(simulation.death_proba * 100))
-
-    agents = 150
-    simulation = Simulation(num_individuals=agents, num_steps=9000, radii=radii, two_door_room=True, random_loc=True,
+    simulation = Simulation(num_individuals=agents, num_steps=9000, two_door_room=True, random_loc=True,
                             is_distributed=True)
     simulation.run()
     print(f'           Evacuation time: {simulation.evacuation_time}s')
@@ -383,7 +376,3 @@ if __name__ == '__main__':
     ex2()
     # ex3()
     # second_3()
-
-    simulation_2a200 = Simulation(num_individuals=200, num_steps=9000, random_loc=True)
-    simulation_2a200.run()
-    print(f'Evacuation Time with 200 agents: {simulation_2a200.evacuation_time}s')

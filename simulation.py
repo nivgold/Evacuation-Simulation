@@ -43,12 +43,13 @@ class Simulation:
                                         mass, v_des, radii, tau=tau))  # initialize Entity
             else:
                 if i < num_individuals / 2:
-                    mass_sample = np.random.normal(loc=78, scale=13.15)
-                    velocity_sample = np.random.normal(loc=1.1, scale=0.25)
+                    mass_sample = np.random.normal(loc=81.74, scale=0.25)
+                    velocity_sample = np.random.normal(loc=0.8, scale=0.1)
                 else:
-                    mass_sample = np.random.normal(loc=65.74, scale=11.34)
-                    velocity_sample = np.random.normal(loc=0.9, scale=0.25)
-                self.entities.append(Entity(self.room, self.y[:, i, 0], self.v[:, i, 0], mass_sample, velocity_sample, radii, tau=tau))
+                    mass_sample = np.random.normal(loc=79.23, scale=0.25)
+                    velocity_sample = np.random.normal(loc=0.7, scale=0.1)
+                self.entities.append(Entity(self.room, self.y[:, i, 0], self.v[:, i, 0],
+                                        mass_sample, velocity_sample, radii, tau=tau))
         self.entities = np.array(self.entities)
 
         for entity in self.entities:
@@ -66,6 +67,7 @@ class Simulation:
 
     # fills the spawn zone with agents with random positions
     def fill_room(self, radii, num_individuals, v_des):
+        radii = 0.1
         spawn = self.room.get_spawn_zone()
         len_right = spawn[0, 1] - spawn[0, 0]
         len_left = spawn[1, 1] - spawn[1, 0]
@@ -93,6 +95,11 @@ class Simulation:
 
         self.v[:, :, 0] = 0
 
+        # for i in range(num_individuals):
+        #     self.y[:, i, 0] = np.array([np.random.uniform(0.01, 14), np.random.uniform(0.01, 14)])
+        #     self.v[:, i, 0] = np.array([0, 0])
+
+
     def fill_center_room(self):
         pos = [self.room.get_room_size()/2, self.room.get_room_size()/2]
         self.y[:, 0, 0] = pos
@@ -112,13 +119,13 @@ class Simulation:
             self.entities[i].v_0 = elder_v_des
 
     def run(self):
-
         for k in range(self.num_steps-1):
             if self.agents_escaped == len(self.entities):
                 break
-            # print every 10 seconds
-            # if k % 1000 == 0:
-            #     print(k)
+            # print every 5 seconds
+            # if k % 500 == 0:
+            #     print(k*0.01, "agent escaped:"+ str(self.agents_escaped))
+            #     # print(self.y[:, :, k])
             for index, entity in enumerate(self.entities):
                 if not entity.escaped:
                     dv_dt = entity.acceleration_calc()
@@ -131,8 +138,43 @@ class Simulation:
                     entity.r = self.y[:, index, k+1]
                     entity.v = self.v[:, index, k+1]
 
+
                     if entity.check_escaped():
                         self.agents_escaped += 1
+
+            # check if there are entities that are out of the room
+            flag = True
+            for i in range(len(self.entities)):
+                if not self.entities[i].escaped:
+                    if self.entities[i].r[0] < 0 or self.entities[i].r[1] < 0 or self.entities[i].r[0] > 15 or self.entities[i].r[1] > 15:
+                        # location
+                        self.y[:, i, k + 1] = np.array([np.random.uniform(0.01, 14), np.random.uniform(0.01, 14)])
+                        self.entities[i].r = self.y[:, i, k + 1]
+                        # velocity
+                        self.v[:, i, k+1] = np.array([0, 0])
+                        self.entities[i].v = self.v[:, i, k+1]
+
+
+                        # if flag:
+                        #     self.entities[i].set_escaped()
+                        #     self.agents_escaped += 1
+                        #     flag = False
+                        # else:
+                        #     self.entities[i].r = self.y[:, i, k]
+                        #     flag = True
+            # for i in range(len(self.entities)):
+            #     if not self.entities[i].escaped:
+            #         for j in range(i+1, len(self.entities)):
+            #             if not self.entities[j].escaped:
+            #                 if np.linalg.norm(self.entities[i].r - self.entities[j].r) <= 0.5:
+            #                     i_distance = np.linalg.norm(self.entities[i].nearest_ext() - self.entities[i].r)
+            #                     j_distance = np.linalg.norm(self.entities[j].nearest_ext() - self.entities[j].r)
+            #                     if i_distance <= j_distance:
+            #                         self.y[:, j, k+1] = self.y[:, j, k]
+            #                         self.entities[j].r = self.y[:, j, k+1]
+            #                     else:
+            #                         self.y[:, i, k+1] = self.y[:, i, k]
+            #                         self.entities[i].r = self.y[:, i, k+1]
 
         self.evacuation_time = 0.01 * (k+2)
         self.death_proba = 1 - (self.agents_escaped / len(self.entities))

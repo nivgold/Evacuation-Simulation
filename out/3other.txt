@@ -1,19 +1,15 @@
 One Door:
 -----------------------------------------------------------------------------------
-25 Agents with Fog Evacuation time: 9.21s and Death Probability: 0%
-50 Agents with Fog Evacuation time: 10.55s and Death Probability: 0%
-75 Agents with Fog Evacuation time: 13.81s and Death Probability: 0%
-100 Agents with Fog Evacuation time: N/A and Death Probability: 2%
-125 Agents with Fog Evacuation time: N/A and Death Probability: 4%
-150 Agents with Fog Evacuation time: N/A and Death Probability: 3.33%
+20 Agents with Fog Evacuation time: 46.31s and Death Probability: 0%
+50 Agents with Fog Evacuation time: 56.81s and Death Probability: 0%
+75 Agents with Fog Evacuation time: 82.84s and Death Probability: 0%
+100 Agents with Fog Evacuation time: N/A and Death Probability: 7%
 -----------------------------------------------------------------------------------
 
 Two Doors:
 -----------------------------------------------------------------------------------
-25 Agents with Fog Evacuation time: 7.17s and Death Probability: 0%
-50 Agents with Fog Evacuation time: 13.83s and Death Probability: 0%
-75 Agents with Fog Evacuation time: 11.46s and Death Probability: 0%
-100 Agents with Fog Evacuation time: 11.94 and Death Probability: 0%
-125 Agents with Fog Evacuation time: 16.88 and Death Probability: 0%
-150 Agents with Fog Evacuation time: N/A and Death Probability: 2.66%
+20 Agents with Fog Evacuation time: 27.36s and Death Probability: 0%
+50 Agents with Fog Evacuation time: 45.46s and Death Probability: 0%
+75 Agents with Fog Evacuation time: 67.03s and Death Probability: 0%
+100 Agents with Fog Evacuation time: N/A and Death Probability: 2%
 -----------------------------------------------------------------------------------

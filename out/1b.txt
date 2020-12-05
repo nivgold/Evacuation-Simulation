@@ -1,1 +1,1 @@
-Longest Evacuation Time: 18.76s
+Longest Evacuation Time: 18.74s

@@ -53,6 +53,9 @@ class Entity:
         else:
             return x
 
+    def g_func(self, r_ij, d_ij):
+        return 0 if (d_ij - r_ij) > 0 else r_ij - d_ij
+
     def set_left_blind(self):
         self.left_blind = True
 
@@ -128,6 +131,25 @@ class Entity:
 
         self.e_0 = direction
 
+    def nearest_ext(self):
+        if not self.room.two_doors:
+            nearest_ext = self.room.get_door_location()
+        else:
+            if self.left_blind:
+                nearest_ext = self.room.get_left_right_door_location()[1]
+            else:
+                right_door_location = self.room.get_left_right_door_location()[1]
+                right_distance = np.linalg.norm(self.r - right_door_location)
+
+                left_door_location = self.room.get_left_right_door_location()[0]
+                left_distance = np.linalg.norm(self.r - left_door_location)
+
+                if right_distance <= left_distance:
+                    nearest_ext = right_door_location
+                else:
+                    nearest_ext = left_door_location
+        return nearest_ext
+
     def check_escaped(self):
         if not self.room.two_doors:
             door_location = self.room.get_door_location()
@@ -149,7 +171,7 @@ class Entity:
 
                 distance = np.min(np.array([right_distance, left_distance]))
 
-        if distance < 0.6:
+        if distance <= 0.6:
             # set entity to be escaped
             self.set_escaped()
             return True
@@ -159,23 +181,44 @@ class Entity:
         self.other_agents = other_agents - {self}
 
     def f_agents(self):
-        f_ij = []
+        # f_ij = []
+        # for other_agent in self.other_agents:
+        #     if not other_agent.escaped:
+        #         f_ij.append(self.f_ij(other_agent))
+        # f_ij = np.array(f_ij)
+        # if len(f_ij) == 0:
+        #     return 0
+        # sum_f_ij = np.sum(f_ij, axis=0)
+        # return sum_f_ij
+
+        sum_fij = 0
         for other_agent in self.other_agents:
             if not other_agent.escaped:
-                f_ij.append(self.f_ij(other_agent))
-        f_ij = np.array(f_ij)
-        if len(f_ij) == 0:
-            return 0
-        sum_f_ij = np.sum(f_ij, axis=0)
-        return sum_f_ij
+                fij = self.f_ij(other_agent)
+                sum_fij += fij
+        return sum_fij
 
     def f_ij(self, other_agent):
-        d_ij, n_ij, t_ij, dv_ij = self.agent_distance(other_agent)
-        r_ij = self.get_rij(other_agent)
-        first_term = self.A * np.exp((r_ij - d_ij) / self.B) + self.k * self.g(r_ij - d_ij)
-        second_term = self.kap * self.g(r_ij - d_ij) * dv_ij
-        f_ij = first_term * n_ij + second_term * t_ij
-        return f_ij
+        # d_ij, n_ij, t_ij, dv_ij = self.agent_distance(other_agent)
+        # r_ij = self.get_rij(other_agent)
+        # first_term = self.A * np.exp((r_ij - d_ij) / self.B) + self.k * self.g(r_ij - d_ij)
+        # second_term = self.kap * self.g(r_ij - d_ij) * dv_ij
+        # f_ij = first_term * n_ij + second_term * t_ij
+        # return f_ij
+
+        v_i = self.v
+        v_j = other_agent.v
+        r_i = self.r
+        r_j = other_agent.r
+        if r_i[0] == r_j[0] and r_i[1] == r_j[1]:
+            r_i[0] -= 0.001
+        r_ij = 0.5
+        d_ij = np.linalg.norm(r_i - r_j)
+        n_ij = (r_i - r_j) / d_ij
+        t_ij = np.array([-n_ij[1], n_ij[0]])
+        dv_ij = (v_j - v_i) * t_ij
+
+        return (self.A * pow(np.e, ((r_ij - d_ij) / self.B)) + self.k * self.g_func(r_ij, d_ij)) * n_ij + self.kap * self.g_func(r_ij, d_ij) * dv_ij * t_ij
 
     def agent_distance(self, other_agent):
         d_ij = np.linalg.norm(self.r - other_agent.r)
@@ -185,19 +228,69 @@ class Entity:
         return d_ij, n_ij, t_ij, dv_ij
 
     def f_walls(self):
-        f_walls = 0
-        for wall in self.room.walls:
-            f_walls += self.f_iW(wall)
-        f_walls = np.array(f_walls)
-        return f_walls
+        # f_walls = 0
+        # for wall in self.room.walls:
+        #     f_walls += self.f_iW(wall)
+        # f_walls = np.array(f_walls)
+        # return f_walls
+
+        sum_fiw = 0
+        if not self.room.two_doors:
+            for wall in ['up','down','left','right_upper','right_lower']:
+                fiw = self.f_iW(self.rw_for_wall(wall, self.r))
+                sum_fiw += fiw
+        else:
+            for wall in ['up', 'down', 'left_upper', 'left_lower', 'right_upper', 'right_lower']:
+                fiw = self.f_iW(self.rw_for_wall(wall, self.r))
+                sum_fiw += fiw
+
+        return sum_fiw
 
     def f_iW(self, wall):
-        d_iW, n_iW, t_iW = self.wall_distance(wall)
-        first_term = self.A * np.exp((self.radii - d_iW) / self.B) + self.k * self.g(self.radii - d_iW)
-        second_term = self.kap * self.g(self.radii - d_iW) * self.v.dot(t_iW)
-        f_iW = first_term * n_iW - second_term * t_iW
+        # d_iW, n_iW, t_iW = self.wall_distance(wall)
+        # first_term = self.A * np.exp((self.radii - d_iW) / self.B) + self.k * self.g(self.radii - d_iW)
+        # second_term = self.kap * self.g(self.radii - d_iW) * self.v.dot(t_iW)
+        # f_iW = first_term * n_iW - second_term * t_iW
+        #
+        # return f_iW
 
-        return f_iW
+        rw = wall
+        v_i = self.v
+        r_i = self.r
+        r_ij = 0.5
+        d_iw = np.linalg.norm(r_i - rw)
+        n_iw = (r_i - rw) / d_iw
+        t_iw = np.array([-n_iw[1], n_iw[0]])
+
+        return (self.A * pow(np.e, ((r_ij - d_iw) / self.B)) + self.k * self.g_func(r_ij, d_iw)) * n_iw - self.kap * self.g_func(r_ij,d_iw) * v_i * t_iw * t_iw
+
+    def rw_for_wall(self, wall, ri):
+        if wall == 'up':
+            return np.array([ri[0], 15])
+        elif wall == 'down':
+            return np.array([ri[0], 0])
+        elif wall == 'left':
+            return np.array([0, ri[1]])
+        elif wall == 'right_upper':
+            if ri[1] > 8:
+                return np.array([15, ri[1]])
+            else:
+                return np.array([15, 8])
+        elif wall == 'right_lower':
+            if ri[1] < 7:
+                return np.array([15, ri[1]])
+            else:
+                return np.array([15, 7])
+        elif wall == 'left_upper':
+            if ri[1] > 8:
+                return np.array([0, ri[1]])
+            else:
+                return np.array([0, 8])
+        elif wall == 'left_lower':
+            if ri[1] < 7:
+                return np.array([0, ri[1]])
+            else:
+                return np.array([0, 7])
 
     def wall_distance(self, wall):
 
